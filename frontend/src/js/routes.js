@@ -332,7 +332,14 @@ const verifyTokenWithBackend = async () => {
             return null;
         }
 
-        const data = await res.json();
+        let data;
+        const responseText = await res.text();
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseErr) {
+            console.error(`Error verificando token: ${res.status}. Texto: "${responseText}"`);
+            return null;
+        }
         return data.user;
 
     } catch (err) {
@@ -555,13 +562,30 @@ window.addEventListener('popstate', router);
 
 // Inicio de la Aplicación
 const initApp = () => {
-    setupInactivityListeners(); // Iniciar listeners de inactividad
+    setupInactivityListeners(); 
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', router);
     } else {
         router();
     }
+};
+
+// Global Error Handling para depuración
+window.onerror = function(message, source, lineno, colno, error) {
+    showAlert({
+        title: 'Error Crítico',
+        message: `Error detectado: ${message}\nEn: ${source}:${lineno}`,
+        type: 'error'
+    });
+};
+
+window.onunhandledrejection = function(event) {
+    showAlert({
+        title: 'Error de Promesa',
+        message: `Promesa rechazada: ${event.reason}`,
+        type: 'error'
+    });
 };
 
 initApp();

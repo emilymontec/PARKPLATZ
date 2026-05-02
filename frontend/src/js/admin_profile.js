@@ -15,8 +15,13 @@ export default async function initAdminProfile() {
             headers: getAuthHeaders()
         });
         
-        if (res.ok) {
-            const user = await res.json();
+        const responseText = await res.text();
+        let user;
+        try {
+            user = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`API profile falló: status ${res.status}. Texto: "${responseText}"`);
+        }
             
             // Actualizar headers
             if (userNameElement) userNameElement.textContent = user.nombres_apellidos || user.username;
@@ -101,7 +106,13 @@ export default async function initAdminProfile() {
                     body: JSON.stringify(body)
                 });
 
-                const data = await res.json();
+                const responseText = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseErr) {
+                    throw new Error(`API profile update falló: status ${res.status}. Texto: "${responseText}"`);
+                }
 
                 if (res.ok) {
                     await showAlert({
@@ -139,4 +150,3 @@ export default async function initAdminProfile() {
             }
         });
     }
-}

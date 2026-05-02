@@ -1,4 +1,5 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config({ quiet: true });
 import express from "express";
 import cors from "cors";
 import path from "path";
@@ -18,6 +19,17 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Global error handler for JSON parsing and other synchronous errors
+app.use((err, req, res, next) => {
+  console.error("Global Express Error:", err);
+  if (!res.headersSent) {
+    res.status(err.status || 500).json({
+      error: err.message || "Error interno del servidor",
+      code: err.code || "SERVER_ERROR"
+    });
+  }
+});
 
 // Servir archivos estáticos del frontend
 app.use(express.static(path.join(__dirname, "../../frontend")));

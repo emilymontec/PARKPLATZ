@@ -74,6 +74,7 @@ export const getActiveVehicles = async (req, res) => {
         vehiculo_id,
         tipos_vehiculo(nombre),
         espacio_id,
+        espacios(codigo),
         entrada,
         salida,
         estado,
@@ -338,7 +339,7 @@ export const registerEntry = async (req, res) => {
     }
     
     // El espacio ya fue marcado como ocupado antes del insert
-    console.log('[registerEntry] Response data:', JSON.stringify(data, null, 2));
+
 
     // Obtener el código del espacio asignado (consulta separada para evitar dependencia de relación FK)
     let espacioCodigo = null;
