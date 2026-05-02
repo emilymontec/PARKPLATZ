@@ -31,10 +31,10 @@ export const getTarifas = async (req, res) => {
       fecha_fin_formateada: tarifa.fecha_fin ? formatLocalDate(tarifa.fecha_fin) : null
     }));
 
-    res.json(formattedData);
+    return res.json(formattedData);
   } catch (err) {
     console.error("Error getting tarifas:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -82,7 +82,7 @@ export const createTarifa = async (req, res) => {
 
     if (error) throw error;
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "Tarifa creada exitosamente",
       tarifa: {
         ...data,
@@ -93,7 +93,7 @@ export const createTarifa = async (req, res) => {
 
   } catch (err) {
     console.error("Error creating tarifa:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -143,7 +143,7 @@ export const updateTarifa = async (req, res) => {
 
     if (error) throw error;
 
-    res.json({
+    return res.json({
       message: "Tarifa actualizada exitosamente",
       tarifa: {
         ...data,
@@ -154,7 +154,7 @@ export const updateTarifa = async (req, res) => {
 
   } catch (err) {
     console.error("Error updating tarifa:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -196,14 +196,14 @@ export const toggleTarifaStatus = async (req, res) => {
 
     if (error) throw error;
 
-    res.json({
+    return res.json({
       message: `Tarifa ${activo ? 'activada' : 'desactivada'}`,
       tarifa: data
     });
 
   } catch (err) {
     console.error("Error toggling tarifa status:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -223,10 +223,10 @@ export const getTiposVehiculo = async (req, res) => {
 
     if (error) throw error;
 
-    res.json(data);
+    return res.json(data);
   } catch (err) {
     console.error("Error getting tipos vehiculo:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });

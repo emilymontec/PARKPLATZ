@@ -20,16 +20,18 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Global error handler for JSON parsing and other synchronous errors
 app.use((err, req, res, next) => {
   console.error("Global Express Error:", err);
   if (!res.headersSent) {
-    res.status(err.status || 500).json({
+    return res.status(err.status || 500).json({
       error: err.message || "Error interno del servidor",
       code: err.code || "SERVER_ERROR"
     });
   }
+  return next(err);
 });
 
 // Determinar la ruta correcta del frontend (dist para producción, raw para desarrollo)
@@ -42,7 +44,7 @@ app.use(express.static(frontendPath));
 
 // Servir index.html para SPA
 app.get("/", (_, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+  return res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // ========== RUTAS DE API ==========
@@ -125,7 +127,7 @@ app.use((req, res) => {
   res.sendFile(indexPath, (err) => {
     if (err) {
       console.error("Error sirviendo index.html:", err);
-      res.status(500).json({
+      return res.status(500).json({
         error: "Error interno del servidor",
         code: "SERVER_ERROR"
       });

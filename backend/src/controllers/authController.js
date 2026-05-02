@@ -6,7 +6,9 @@ import { generateToken } from "../services/authService.js";
  * Login - Autenticar usuario y generar JWT
  */
 export const login = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body ?? {};
+
+  console.log("Login request:", req.body);
 
   if (!username || !password) {
     return res.status(400).json({ 
@@ -80,7 +82,7 @@ export const login = async (req, res) => {
 
     // Retornar usuario sin datos sensibles y token
     const { password_hash, rol_id, roles, ...userInfo } = user;
-    res.json({ 
+    return res.json({ 
       message: "Autenticación exitosa",
       token,
       user: {
@@ -92,7 +94,7 @@ export const login = async (req, res) => {
 
   } catch (err) {
     console.error("Unexpected error in login:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: "Error en el servidor",
       code: "SERVER_ERROR"
     });
@@ -149,10 +151,11 @@ export const changePassword = async (req, res) => {
 
     if (updateError) throw updateError;
 
-    res.json({ message: "Contraseña actualizada correctamente." });
+    return res.json({ message: "Contraseña actualizada correctamente." });
 
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error changing password:", err);
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -169,9 +172,10 @@ export const getProfile = async (req, res) => {
       .single();
 
     if (error) throw error;
-    res.json(data);
+    return res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error getting profile:", err);
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -214,10 +218,10 @@ export const updateProfile = async (req, res) => {
 
     if (error) throw error;
     
-    res.json({ message: "Perfil actualizado correctamente", user: data });
+    return res.json({ message: "Perfil actualizado correctamente", user: data });
   } catch (err) {
     console.error("Error updating profile:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -227,7 +231,7 @@ export const updateProfile = async (req, res) => {
  */
 export const logout = async (req, res) => {
   // El usuario existe en req.user (validado por middleware)
-  res.json({ 
+  return res.json({ 
     message: "Sesión cerrada correctamente",
     user: req.user
   });
@@ -238,7 +242,7 @@ export const logout = async (req, res) => {
  * Útil para validaciones de sesión en el frontend
  */
 export const verify = async (req, res) => {
-  res.json({ 
+  return res.json({ 
     message: "Token válido",
     user: req.user
   });

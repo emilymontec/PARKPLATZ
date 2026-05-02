@@ -36,7 +36,7 @@ export const getQuotaStats = async (req, res) => {
     const motosDisponibles = motosData ? motosData.filter(e => e.disponible).length : 0;
     const motosTotal = motosData ? motosData.length : 15;
 
-    res.json({
+    return res.json({
       autos: {
         active: autosOcupados,
         total: autosTotal,
@@ -56,7 +56,7 @@ export const getQuotaStats = async (req, res) => {
 
   } catch (err) {
     console.error("Error getting quota stats:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -86,10 +86,10 @@ export const getActiveVehicles = async (req, res) => {
 
     if (error) throw error;
     
-    res.json(data);
+    return res.json(data);
   } catch (err) {
     console.error("Error getting active vehicles:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -101,7 +101,7 @@ export const getActiveVehicles = async (req, res) => {
  * Ruta protegida: Solo OPERARIO
  */
 export const registerEntry = async (req, res) => {
-  const { placa, tipo_vehiculo_id, espacio_id } = req.body;
+  const { placa, tipo_vehiculo_id, espacio_id } = req.body ?? {};
 
   if (!placa || !tipo_vehiculo_id) {
     return res.status(400).json({ 
@@ -359,13 +359,13 @@ export const registerEntry = async (req, res) => {
       espacios: { codigo: espacioCodigo || 'Sin asignar' }
     };
 
-    res.status(201).json({ 
+    return res.status(201).json({ 
       message: "Entrada registrada",
       data: responseData
     });
   } catch (err) {
     console.error("Error registering entry:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -377,7 +377,7 @@ export const registerEntry = async (req, res) => {
  * Ruta protegida: Solo OPERARIO
  */
 export const registerExit = async (req, res) => {
-  const { placa } = req.body;
+  const { placa } = req.body ?? {};
 
   if (!placa) {
     return res.status(400).json({ 
@@ -525,7 +525,7 @@ export const registerExit = async (req, res) => {
       salida_formateada: formatLocalDate(data.salida)
     };
     
-    res.json({ 
+    return res.json({ 
       message: "Salida registrada",
       data: responseData,
       duracion_minutos: diffMins,
@@ -533,7 +533,7 @@ export const registerExit = async (req, res) => {
     });
   } catch (err) {
     console.error("Error registering exit:", err);
-    res.status(500).json({ 
+    return res.status(500).json({ 
       error: err.message,
       code: "DB_ERROR"
     });
@@ -642,7 +642,7 @@ export const previewExit = async (req, res) => {
     // Redondear a 2 decimales para visualización limpia
     costoTotal = Math.round(costoTotal * 100) / 100;
 
-    res.json({
+    return res.json({
       placa: registro.placa,
       tipo_vehiculo: registro.tipos_vehiculo?.nombre,
       entrada: registro.entrada,
@@ -656,6 +656,6 @@ export const previewExit = async (req, res) => {
 
   } catch (err) {
     console.error("Error previewing exit:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };

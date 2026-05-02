@@ -103,7 +103,7 @@ export const getDashboardStats = async (req, res) => {
     // Esto podría refinarse si hubiera una tabla de configuración de espacios
     const espaciosDisponibles = 45 - (ocupacionActual || 0);
 
-    res.json({
+    return res.json({
       ocupacionActual: ocupacionActual || 0,
       gananciasHoy: gananciasTotal, // Ahora sumamos con filtro > 0
       vehiculosHoy: vehiculosHoy || 0,
@@ -113,7 +113,7 @@ export const getDashboardStats = async (req, res) => {
 
   } catch (err) {
     console.error("Error getting dashboard stats:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -144,7 +144,7 @@ export const getRegistrosHistory = async (req, res) => {
 
     if (error) throw error;
 
-    res.json({
+    return res.json({
       data,
       count,
       page: Number(page),
@@ -152,7 +152,7 @@ export const getRegistrosHistory = async (req, res) => {
     });
   } catch (err) {
     console.error("Error getting history:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -182,9 +182,9 @@ export const getUsers = async (req, res) => {
         rol: user.roles ? user.roles.nombre : 'SIN ROL'
     }));
 
-    res.json(users);
+    return res.json(users);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -199,9 +199,9 @@ export const getRoles = async (req, res) => {
             .order("id_roles");
         
         if (error) throw error;
-        res.json(data);
+        return res.json(data);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
     }
 };
 
@@ -240,12 +240,12 @@ export const createUser = async (req, res) => {
       .select();
 
     if (error) throw error;
-    res.status(201).json(data ? data[0] || {} : {});
+    return res.status(201).json(data ? data[0] || {} : {});
   } catch (err) {
     if (err.code === '23505') { // Unique violation
         return res.status(400).json({ error: "El nombre de usuario ya existe" });
     }
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -288,9 +288,9 @@ export const updateUser = async (req, res) => {
       .select();
 
     if (error) throw error;
-    res.json(data ? data[0] || {} : {});
+    return res.json(data ? data[0] || {} : {});
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -315,9 +315,9 @@ export const toggleUserStatus = async (req, res) => {
       .select();
 
     if (error) throw error;
-    res.json(data ? data[0] || {} : {});
+    return res.json(data ? data[0] || {} : {});
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -344,9 +344,9 @@ export const resetUserPassword = async (req, res) => {
 
     if (error) throw error;
     
-    res.json({ message: 'Contraseña restablecida correctamente', user: data ? data[0] || {} : {} });
+    return res.json({ message: 'Contraseña restablecida correctamente', user: data ? data[0] || {} : {} });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
 
@@ -370,10 +370,10 @@ export const getRegistrosDebug = async (req, res) => {
             .lte("entrada", endOfDay);
 
         if (error) throw error;
-        res.json(data);
+        return res.json(data);
     } catch (err) {
         console.error("Error debug:", err);
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
     }
 };
 
@@ -391,9 +391,9 @@ export const getEspacios = async (req, res) => {
             .order("id_espacio");
 
         if (error) throw error;
-        res.json(data);
+        return res.json(data);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
     }
 };
 
@@ -406,9 +406,9 @@ export const resetEspacios = async (req, res) => {
             .neq("id_espacio", 0); // Actualiza todos
 
         if (error) throw error;
-        res.json({ message: "Espacios reseteados correctamente" });
+        return res.json({ message: "Espacios reseteados correctamente" });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: err.message });
     }
 };
 
@@ -509,10 +509,10 @@ export const getMonthlyReport = async (req, res) => {
 
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="reporte-${reportMonth}.csv"`);
-    res.send(csvContent);
+    return res.send(csvContent);
 
   } catch (err) {
     console.error("Error generating report:", err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 };
