@@ -1,7 +1,6 @@
 import { showAlert, showConfirm, clearAuthSession, navigateTo, getAuthHeaders } from './routes.js';
 
 export default async function initAdminProfile() {
-    // Elementos UI
     const userNameElement = document.getElementById('userName');
     const profileNameHeader = document.getElementById('profileNameHeader');
     const profileUsernameHeader = document.getElementById('profileUsernameHeader');
@@ -9,30 +8,21 @@ export default async function initAdminProfile() {
     const profileNameInput = document.getElementById('profileName');
     const profileEmailInput = document.getElementById('profileEmail');
     
-    // Cargar datos del perfil desde API
     try {
         const res = await fetch('/api/auth/profile', {
             headers: getAuthHeaders()
         });
         
-        const responseText = await res.text();
-        let user;
-        try {
-            user = JSON.parse(responseText);
-        } catch (parseErr) {
-            throw new Error(`API profile falló: status ${res.status}. Texto: "${responseText}"`);
-        }
+        if (res.ok) {
+            const user = await res.json();
             
-            // Actualizar headers
             if (userNameElement) userNameElement.textContent = user.nombres_apellidos || user.username;
             if (profileNameHeader) profileNameHeader.textContent = user.nombres_apellidos || user.username;
             if (profileUsernameHeader) profileUsernameHeader.textContent = '@' + user.username;
             
-            // Actualizar inputs
             if (profileNameInput) profileNameInput.value = user.nombres_apellidos || '';
             if (profileEmailInput) profileEmailInput.value = user.email || '';
             
-            // Actualizar localStorage
             const localUser = JSON.parse(localStorage.getItem('user')) || {};
             localStorage.setItem('user', JSON.stringify({ ...localUser, ...user }));
         } else {
@@ -43,7 +33,6 @@ export default async function initAdminProfile() {
         console.error('Error fetching profile:', err);
     }
 
-    // Logout logic
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async () => {
@@ -68,7 +57,6 @@ export default async function initAdminProfile() {
         });
     }
 
-    // Update Profile Form
     const form = document.getElementById('updateProfileForm');
     if (form) {
         form.addEventListener('submit', async (e) => {
@@ -79,7 +67,6 @@ export default async function initAdminProfile() {
             const newPassword = document.getElementById('newPassword').value;
             const confirmNewPassword = document.getElementById('confirmNewPassword').value;
 
-            // Validaciones locales
             if (newPassword) {
                 if (newPassword.length < 6) {
                     await showAlert({ title: 'Error', message: 'La nueva contraseña debe tener al menos 6 caracteres.', type: 'error' });
@@ -106,13 +93,7 @@ export default async function initAdminProfile() {
                     body: JSON.stringify(body)
                 });
 
-                const responseText = await res.text();
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                } catch (parseErr) {
-                    throw new Error(`API profile update falló: status ${res.status}. Texto: "${responseText}"`);
-                }
+                const data = await res.json();
 
                 if (res.ok) {
                     await showAlert({
@@ -125,11 +106,9 @@ export default async function initAdminProfile() {
                         clearAuthSession();
                         navigateTo('/login');
                     } else {
-                        // Recargar datos visuales
                         profileNameHeader.textContent = data.user.nombres_apellidos;
                         userNameElement.textContent = data.user.nombres_apellidos;
                         
-                        // Actualizar localStorage
                         const localUser = JSON.parse(localStorage.getItem('user')) || {};
                         localStorage.setItem('user', JSON.stringify({ ...localUser, ...data.user }));
                     }
@@ -150,3 +129,4 @@ export default async function initAdminProfile() {
             }
         });
     }
+}

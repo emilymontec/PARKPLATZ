@@ -1,14 +1,16 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
-export default defineConfig({
-  server: {
-    port: 5173,
-    proxy: {
-      // Redirige todas las llamadas /api/* al backend Express en :4000
-      '/api': {
-        target: 'http://127.0.0.1:4000',
-        changeOrigin: true,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  return {
+    server: {
+      port: 5173,
+      proxy: {
+        '/api': {
+          target: env.VITE_BACKEND_URL || 'http://127.0.0.1:4000',
+          changeOrigin: true,
+        },
       },
     },
-  },
+  };
 });
