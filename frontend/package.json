@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Frontend estático de Parkplatz",
   "scripts": {
-    "dev": "vite --port 5173 --open",
+    "dev": "vite",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
