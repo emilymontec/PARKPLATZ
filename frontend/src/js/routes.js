@@ -3,6 +3,7 @@
  * Gestiona la carga dinámica de vistas y controladores usando rutas limpias.
  * Incluye autenticación JWT y validación de roles.
  */
+import WhatsAppFloat from './whatsapp-float.js';
 
 /**
  * Mostrar Alerta Personalizada (Reutiliza Modal de Confirmación)
@@ -119,64 +120,64 @@ export const showConfirm = ({ title, message, icon, okText, cancelText, type = '
 // Configuración de rutas
 const routes = {
     '/': {
-        view: '/src/views/login.html',
-        styles: ['/src/css/login.css'],
+        view: '/views/login.html',
+        styles: ['/css/login.css'],
         title: 'Login - Parkplatz',
         controller: './login.js',
         initFn: 'initLogin',
         public: true // Ruta pública (sin token)
     },
     '/login': {
-        view: '/src/views/login.html',
-        styles: ['/src/css/login.css'],
+        view: '/views/login.html',
+        styles: ['/css/login.css'],
         title: 'Login - Parkplatz',
         controller: './login.js',
         initFn: 'initLogin',
         public: true
     },
     '/admin': {
-        view: '/src/views/admin/dashboard.html',
-        styles: ['/src/css/global.css', '/src/css/admin.css'],
+        view: '/views/admin/dashboard.html',
+        styles: ['/css/global.css', '/css/admin.css'],
         title: 'Administración - Parkplatz',
         role: 'ADMINISTRADOR',
         controller: './admin.js',
         initFn: 'initAdmin'
     },
     '/admin/users': {
-        view: '/src/views/admin/users.html',
-        styles: ['/src/css/global.css', '/src/css/admin.css'],
+        view: '/views/admin/users.html',
+        styles: ['/css/global.css', '/css/admin.css'],
         title: 'Gestión Usuarios - Parkplatz',
         role: 'ADMINISTRADOR',
         controller: './users.js',
         initFn: 'initUsers'
     },
     '/admin/tarifas': {
-        view: '/src/views/admin/tarifas.html',
-        styles: ['/src/css/global.css', '/src/css/admin.css'],
+        view: '/views/admin/tarifas.html',
+        styles: ['/css/global.css', '/css/admin.css'],
         title: 'Gestión Tarifas - Parkplatz',
         role: 'ADMINISTRADOR',
         controller: './tarifas.js',
         initFn: 'initTarifas'
     },
     '/admin/perfil': {
-        view: '/src/views/admin/profile.html',
-        styles: ['/src/css/global.css', '/src/css/admin.css'],
+        view: '/views/admin/profile.html',
+        styles: ['/css/global.css', '/css/admin.css'],
         title: 'Perfil Admin - Parkplatz',
         role: 'ADMINISTRADOR',
         controller: './admin_profile.js',
         initFn: 'default'
     },
     '/operario': {
-        view: '/src/views/operario/dashboard.html',
-        styles: ['/src/css/global.css', '/src/css/operario.css'],
+        view: '/views/operario/dashboard.html',
+        styles: ['/css/global.css', '/css/operario.css'],
         title: 'Operación - Parkplatz',
         role: 'OPERARIO',
         controller: './operario.js',
         initFn: 'initOperator'
     },
     '/operario/perfil': {
-        view: '/src/views/operario/profile.html',
-        styles: ['/src/css/global.css', '/src/css/operario.css'],
+        view: '/views/operario/profile.html',
+        styles: ['/css/global.css', '/css/operario.css'],
         title: 'Perfil Operario - Parkplatz',
         role: 'OPERARIO',
         controller: './operario_profile.js',
@@ -564,10 +565,19 @@ window.addEventListener('popstate', router);
 const initApp = () => {
     setupInactivityListeners(); 
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', router);
-    } else {
+    const onContentLoaded = () => {
+        // Inicializar botón WhatsApp flotante
+        new WhatsAppFloat({
+            phoneNumber: '+573246372082',
+            message: '¡Hola! Tengo una consulta sobre el parqueadero Parkplatz.'
+        });
         router();
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', onContentLoaded);
+    } else {
+        onContentLoaded();
     }
 };
 

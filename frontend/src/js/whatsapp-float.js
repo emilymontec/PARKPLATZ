@@ -17,7 +17,6 @@ class WhatsAppFloat {
     this.createFloatingButton();
     this.attachEventListeners();
     
-    // Mostrar mensaje después de 2 segundos si está habilitado
     if (this.showMessage) {
       setTimeout(() => {
         this.showInitialMessage();
@@ -30,7 +29,6 @@ class WhatsAppFloat {
     container.className = 'whatsapp-float';
     container.id = 'whatsapp-float-container';
 
-    // Crear mensaje
     if (this.showMessage) {
       const messageBox = document.createElement('div');
       messageBox.className = 'whatsapp-message-box';
@@ -47,7 +45,6 @@ class WhatsAppFloat {
       container.appendChild(messageBox);
     }
 
-    // Crear botón
     const button = document.createElement('button');
     button.className = `whatsapp-button ${this.showPulse ? 'pulse' : ''}`;
     button.id = 'whatsapp-btn';
@@ -65,7 +62,6 @@ class WhatsAppFloat {
       this.openWhatsApp();
     });
 
-    // Ocultar mensaje al hacer clic en el botón
     button.addEventListener('mouseenter', () => {
       const messageBox = document.getElementById('whatsapp-message');
       if (messageBox) {
@@ -80,7 +76,6 @@ class WhatsAppFloat {
       }
     });
 
-    // Cerrar mensaje al hacer clic en él
     const messageBox = document.getElementById('whatsapp-message');
     if (messageBox) {
       messageBox.addEventListener('click', () => {
@@ -90,7 +85,6 @@ class WhatsAppFloat {
   }
 
   openWhatsApp() {
-    // Formato de WhatsApp: https://wa.me/NUMERO?text=MENSAJE
     const encodedMessage = encodeURIComponent(this.message);
     const whatsappURL = `https://wa.me/${this.phoneNumber.replace(/[^0-9]/g, '')}?text=${encodedMessage}`;
     
@@ -141,7 +135,6 @@ class WhatsAppFloat {
   }
 }
 
-// Exportar para uso en módulos y global
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = WhatsAppFloat;
 }

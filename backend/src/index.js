@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { supabase } from "./config/db.js";
@@ -31,12 +32,17 @@ app.use((err, req, res, next) => {
   }
 });
 
+// Determinar la ruta correcta del frontend (dist para producción, raw para desarrollo)
+const distPath = path.join(__dirname, "../../frontend/dist");
+const rawFrontendPath = path.join(__dirname, "../../frontend");
+const frontendPath = fs.existsSync(distPath) ? distPath : rawFrontendPath;
+
 // Servir archivos estáticos del frontend
-app.use(express.static(path.join(__dirname, "../../frontend")));
+app.use(express.static(frontendPath));
 
 // Servir index.html para SPA
 app.get("/", (_, res) => {
-  res.sendFile(path.join(__dirname, "../../frontend/index.html"));
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // ========== RUTAS DE API ==========
@@ -115,7 +121,7 @@ app.use((req, res) => {
   }
   
   // Servir index.html para rutas del frontend (SPA routing)
-  const indexPath = path.join(__dirname, "../../frontend/index.html");
+  const indexPath = path.join(frontendPath, "index.html");
   res.sendFile(indexPath, (err) => {
     if (err) {
       console.error("Error sirviendo index.html:", err);
@@ -130,7 +136,8 @@ app.use((req, res) => {
 // ========== INICIAR SERVIDOR ==========
 
 initializeSystem().then(() => {
-  app.listen(4000, () => {
-    console.log(`Server running at http://localhost:4000`);
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
   });
 });
