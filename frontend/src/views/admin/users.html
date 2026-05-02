@@ -1,0 +1,111 @@
+<nav class="navbar">
+    <a href="/admin" class="logo">
+        <img src="/src/static/icons/logo.png" alt="Logo">
+        <span>Parkplatz</span>
+    </a>
+    <div class="nav-links">
+        <a href="/admin">Panel</a>
+        <a href="/admin/users" class="active">Usuarios</a>
+        <a href="/admin/tarifas">Tarifas</a>
+        <a href="/admin/perfil">Perfil</a>
+    </div>
+    <div class="user-profile">
+        <div class="user-info">
+            <span id="userName" class="user-name">Cargando...</span>
+            <span class="user-role">Administrador</span>
+        </div>
+        <button id="logoutBtn" class="btn btn-logout" style="padding: 10px; min-width: 42px;">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+    </div>
+</nav>
+
+<main>
+    <div class="page-header">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
+            <div>
+                <h1>Gestión de Usuarios</h1>
+                <p>Personaliza los perfiles, roles y accesos del equipo.</p>
+            </div>
+            <button id="btnCreateUser" class="btn btn-primary">
+                <i class="fa-solid fa-user-plus"></i> Crear Nuevo Usuario
+            </button>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Contacto</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th style="text-align: right;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 80px;">
+                        <i class="fa-solid fa-circle-notch fa-spin"
+                            style="font-size: 24px; margin-bottom: 12px; display: block;"></i>
+                        Cargando usuarios...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Modal: Crear/Editar Usuario -->
+<div id="userModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Nuevo Usuario</h2>
+            <button id="btnCancelModal" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <form id="userForm">
+            <input type="hidden" id="userId">
+
+            <div class="input-group">
+                <label>Nombre Completo</label>
+                <div class="input-icon-container">
+                    <i class="fa-solid fa-signature input-icon"></i>
+                    <input type="text" id="nombres_apellidos" class="input-field input-with-icon"
+                        placeholder="Ej: Juan Pérez" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" class="input-field" placeholder="jperez" required>
+                </div>
+                <div class="input-group">
+                    <label>Rol</label>
+                    <select id="rol_id" class="input-field" required>
+                        <option value="">Cargando...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Email Corporativo</label>
+                <input type="email" id="email" class="input-field" placeholder="correo@ejemplo.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Contraseña</label>
+                <input type="password" id="password" class="input-field" placeholder="••••••">
+                <small id="passwordHelp"
+                    style="display: block; margin-top: 8px; color: var(--text-dim); font-size: 0.75rem;"></small>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                <button type="button" id="btnCancelBottom" class="btn btn-cancel">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
