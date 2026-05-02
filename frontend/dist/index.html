@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parkplatz - Sistema de Gestión</title>
+    <!-- Base styles -->
+    <!-- WhatsApp Float Widget -->
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- QRCode.js (Generation) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Html5-QRCode (Scanning) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    <style>
+        /* Minimal loading state */
+        #app:empty {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #F8F9FA;
+        }
+
+        #app:empty::after {
+            content: "";
+            width: 30px;
+            height: 30px;
+            border: 3px solid #FF7F0022;
+            border-top-color: #FF7F00;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+  <script type="module" crossorigin src="/assets/index-DJzgdWb3.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CvNHIGQq.css">
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <!-- Modal de Confirmación Global -->
+    <div id="confirmModal" class="modal-overlay" style="z-index: 3000;">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div id="confirmIcon" style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+            <h2 id="confirmTitle" style="margin-bottom: 0.5rem;">¿Estás seguro?</h2>
+            <p id="confirmMessage" style="color: var(--text-muted); margin-bottom: 2rem;">Esta acción no se puede
+                deshacer.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <button id="confirmCancelBtn" class="btn btn-logout">Cancelar</button>
+                <button id="confirmOkBtn" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Entry Point -->
+</body>
+
+</html>

@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { supabase } from "./config/db.js";
@@ -31,8 +32,12 @@ app.use((err, req, res, next) => {
   }
 });
 
-// Servir archivos estáticos del frontend (dist folder para producción)
-const frontendPath = path.join(__dirname, "../../frontend/dist");
+// Determinar la ruta correcta del frontend (dist para producción, raw para desarrollo)
+const distPath = path.join(__dirname, "../../frontend/dist");
+const rawFrontendPath = path.join(__dirname, "../../frontend");
+const frontendPath = fs.existsSync(distPath) ? distPath : rawFrontendPath;
+
+// Servir archivos estáticos del frontend
 app.use(express.static(frontendPath));
 
 // Servir index.html para SPA
