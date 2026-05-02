@@ -31,12 +31,13 @@ app.use((err, req, res, next) => {
   }
 });
 
-// Servir archivos estáticos del frontend
-app.use(express.static(path.join(__dirname, "../../frontend")));
+// Servir archivos estáticos del frontend (dist folder para producción)
+const frontendPath = path.join(__dirname, "../../frontend/dist");
+app.use(express.static(frontendPath));
 
 // Servir index.html para SPA
 app.get("/", (_, res) => {
-  res.sendFile(path.join(__dirname, "../../frontend/index.html"));
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 // ========== RUTAS DE API ==========
@@ -115,7 +116,7 @@ app.use((req, res) => {
   }
   
   // Servir index.html para rutas del frontend (SPA routing)
-  const indexPath = path.join(__dirname, "../../frontend/index.html");
+  const indexPath = path.join(frontendPath, "index.html");
   res.sendFile(indexPath, (err) => {
     if (err) {
       console.error("Error sirviendo index.html:", err);

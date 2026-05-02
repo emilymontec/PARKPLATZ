@@ -3,6 +3,7 @@
  * Gestiona la carga dinámica de vistas y controladores usando rutas limpias.
  * Incluye autenticación JWT y validación de roles.
  */
+import WhatsAppFloat from './whatsapp-float.js';
 
 /**
  * Mostrar Alerta Personalizada (Reutiliza Modal de Confirmación)
@@ -563,6 +564,14 @@ window.addEventListener('popstate', router);
 // Inicio de la Aplicación
 const initApp = () => {
     setupInactivityListeners(); 
+
+    // Inicializar botón WhatsApp flotante
+    document.addEventListener('DOMContentLoaded', () => {
+        new WhatsAppFloat({
+            phoneNumber: '+573246372082',
+            message: '¡Hola! Tengo una consulta sobre el parqueadero Parkplatz.'
+        });
+    });
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', router);
