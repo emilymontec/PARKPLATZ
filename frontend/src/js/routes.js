@@ -5,6 +5,17 @@
  */
 import WhatsAppFloat from './whatsapp-float.js';
 
+// Vite-resolved controller module registry (hashed chunks in production)
+const controllerModules = import.meta.glob([
+    './login.js',
+    './admin.js',
+    './users.js',
+    './tarifas.js',
+    './admin_profile.js',
+    './operario.js',
+    './operario_profile.js'
+]);
+
 /**
  * Mostrar Alerta Personalizada (Reutiliza Modal de Confirmación)
  */
@@ -459,7 +470,12 @@ const router = async () => {
         // 9. Cargar y Ejecutar Controlador JS
         if (config.controller) {
             try {
-                const module = await import(config.controller);
+                const loadController = controllerModules[config.controller];
+                if (!loadController) {
+                    throw new Error(`Controlador no encontrado en build: ${config.controller}`);
+                }
+
+                const module = await loadController();
                 const initFunction = module.default || module[config.initFn];
 
                 if (typeof initFunction === 'function') {
