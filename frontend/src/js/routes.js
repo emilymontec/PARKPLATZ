@@ -565,18 +565,19 @@ window.addEventListener('popstate', router);
 const initApp = () => {
     setupInactivityListeners(); 
 
-    // Inicializar botón WhatsApp flotante
-    document.addEventListener('DOMContentLoaded', () => {
+    const onContentLoaded = () => {
+        // Inicializar botón WhatsApp flotante
         new WhatsAppFloat({
             phoneNumber: '+573246372082',
             message: '¡Hola! Tengo una consulta sobre el parqueadero Parkplatz.'
         });
-    });
+        router();
+    };
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', router);
+        document.addEventListener('DOMContentLoaded', onContentLoaded);
     } else {
-        router();
+        onContentLoaded();
     }
 };
 
