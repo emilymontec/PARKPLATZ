@@ -240,7 +240,7 @@ export const createUser = async (req, res) => {
       .select();
 
     if (error) throw error;
-    res.status(201).json(data[0]);
+    res.status(201).json(data ? data[0] || {} : {});
   } catch (err) {
     if (err.code === '23505') { // Unique violation
         return res.status(400).json({ error: "El nombre de usuario ya existe" });
@@ -288,7 +288,7 @@ export const updateUser = async (req, res) => {
       .select();
 
     if (error) throw error;
-    res.json(data[0]);
+    res.json(data ? data[0] || {} : {});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -315,7 +315,7 @@ export const toggleUserStatus = async (req, res) => {
       .select();
 
     if (error) throw error;
-    res.json(data[0]);
+    res.json(data ? data[0] || {} : {});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -344,7 +344,7 @@ export const resetUserPassword = async (req, res) => {
 
     if (error) throw error;
     
-    res.json({ message: 'Contraseña restablecida correctamente', user: data[0] });
+    res.json({ message: 'Contraseña restablecida correctamente', user: data ? data[0] || {} : {} });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

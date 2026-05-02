@@ -19,13 +19,19 @@ export default function initLogin() {
         btn.innerText = 'Autenticando...';
 
         try {
-            const res = await fetch('/api/auth/login', {
+            const res = await fetch('http://127.0.0.1:4000/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
 
-            const data = await res.json();
+            let data;
+            const responseText = await res.text();
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseErr) {
+                throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+            }
 
             if (!res.ok) {
                 throw new Error(data.error || 'Credenciales inválidas');

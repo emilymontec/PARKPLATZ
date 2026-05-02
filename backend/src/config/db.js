@@ -1,4 +1,8 @@
+import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
+
+// Cargar variables de entorno desde .env
+dotenv.config({ quiet: true, path: ".env" });
 
 // Usar Service Role Key si está disponible para evitar restricciones RLS en backend
 // Si no, usar la Key estándar (que podría ser Anon y causar errores de permisos)

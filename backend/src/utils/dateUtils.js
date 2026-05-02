@@ -112,7 +112,8 @@ export const calculateMinutesDifference = (startDate, endDate) => {
   let diffMs = end.getTime() - start.getTime();
   if (diffMs < 0) diffMs = 0;
   
-  return Math.ceil(diffMs / 60000);
+  const minutes = Math.ceil(diffMs / 60000) - 300;
+  return minutes > 0 ? minutes : 0;
 };
 
 /**

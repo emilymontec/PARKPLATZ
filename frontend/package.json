@@ -1,0 +1,12 @@
+{
+  "name": "parkplatz-frontend",
+  "version": "1.0.0",
+  "description": "Frontend estático de Parkplatz",
+  "scripts": {
+    "dev": "vite --port 5173 --open",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}

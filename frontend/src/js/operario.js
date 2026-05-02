@@ -190,7 +190,13 @@ export default function initOperator() {
                     return;
                 }
 
-                const data = await res.json();
+                const responseText = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseErr) {
+                    throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+                }
                 if (!res.ok) throw new Error(data.error || 'Error al registrar entrada');
 
                 // Mostrar Ticket de Entrada en lugar de solo alerta
@@ -240,7 +246,13 @@ async function loadVehicleTypes() {
 
         if (!res.ok) throw new Error('Error al cargar tipos');
 
-        const tipos = await res.json();
+        const responseText = await res.text();
+        let tipos;
+        try {
+            tipos = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+        }
         
         select.innerHTML = '<option value="">Seleccione Categoría...</option>';
         tipos.forEach(tipo => {
@@ -271,12 +283,19 @@ async function loadVehicles() {
             return;
         }
 
+        const responseText = await res.text();
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+        }
+        
         if (!res.ok) {
-            const data = await res.json();
             throw new Error(data.error || 'Error al cargar vehículos');
         }
 
-        const vehicles = await res.json();
+        const vehicles = data;
         currentVehicles = vehicles; // Actualizar store local
 
         // Aplicar filtro si existe texto en el buscador
@@ -303,7 +322,7 @@ function renderVehicles(vehicles) {
     if (!tbody) return;
 
     if (vehicles.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px; color: #666;">No hay vehículos en el parqueadero</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px; color: #666;">No hay vehículos en el parqueadero</td></tr>';
         return;
     }
 
@@ -342,11 +361,13 @@ function renderVehicles(vehicles) {
         });
         
         const tipoNombre = v.tipos_vehiculo?.nombre || 'Desconocido';
+        const espacioNombre = v.espacios?.codigo || 'General';
 
         return `
         <tr>
             <td><span class="plate-badge">${v.placa}</span></td>
             <td>${tipoNombre}</td>
+            <td><span class="badge" style="background-color: var(--primary-light); color: var(--primary); font-weight: bold;">${espacioNombre}</span></td>
             <td>${horaEntrada}</td>
             <td><span style="font-weight: 600; color: var(--text-lead);"><i class="fa-regular fa-clock"></i> ${tiempoTexto}</span></td>
             <td><span class="badge badge-success">En Patio</span></td>
@@ -388,7 +409,13 @@ async function calculateExit(placa) {
             throw new Error('No se encontró vehículo activo con esta placa.');
         }
         
-        const data = await res.json();
+        const responseText = await res.text();
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+        }
         
         // Populate Summary
         document.getElementById('summaryPlaca').textContent = data.placa;
@@ -421,7 +448,13 @@ async function processExit(placa) {
             body: JSON.stringify({ placa })
         });
         
-        const data = await res.json();
+        const responseText = await res.text();
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+        }
         if (!res.ok) throw new Error(data.error || 'Error al procesar salida');
         
         // Show Receipt Step instead of closing
@@ -479,7 +512,13 @@ async function updateQuotaStats() {
         
         if (!res.ok) return;
 
-        const data = await res.json();
+        const responseText = await res.text();
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`Error en API ${res.url}: respuesta vacía o inválida (status ${res.status}). Texto: "${responseText}"`);
+        }
         // data structure: { autos: {active, total}, motos: {active, total}, total: {active, limit} }
 
         const countEl = document.getElementById('occupancyCount');
@@ -605,7 +644,8 @@ function showEntryTicket(data) {
         hour: '2-digit', minute: '2-digit', hour12: true
     });
     
-    document.getElementById('entryTicketSpace').textContent = data.espacio_id || 'General';
+    const espacioText = (data.espacios && data.espacios.codigo) ? data.espacios.codigo : (data.espacio_id || 'General');
+    document.getElementById('entryTicketSpace').textContent = espacioText;
 
     const qrContainer = document.getElementById('entryTicketQR');
     if (qrContainer) {

@@ -149,12 +149,19 @@ async function loadDashboardData() {
             return;
         }
 
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Error cargando estadísticas');
+        const responseText = await res.text();
+        let stats, data;
+        try {
+            const parsed = JSON.parse(responseText);
+            if (!res.ok) data = parsed;
+            stats = parsed;
+        } catch (parseErr) {
+            throw new Error(`API stats falló: status ${res.status}. Texto: "${responseText}"`);
         }
         
-        const stats = await res.json();
+        if (!res.ok) {
+            throw new Error(data.error || 'Error cargando estadísticas');
+        }
         
         const income = document.getElementById('todayIncome');
         const occupancy = document.getElementById('currentOccupancy');
@@ -252,8 +259,13 @@ async function renderActivityTable() {
 
         if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
 
-        const responseData = await res.json();
-        // Support both { data: [...] } and [...] formats
+        const responseText = await res.text();
+        let responseData;
+        try {
+            responseData = JSON.parse(responseText);
+        } catch (parseErr) {
+            throw new Error(`API registros falló: status ${res.status}. Texto: "${responseText}"`);
+        }
         const data = Array.isArray(responseData) ? responseData : (responseData.data || []);
 
         if (!data || data.length === 0) {
