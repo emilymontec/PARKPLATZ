@@ -141,7 +141,11 @@ class WhatsAppFloat {
   }
 }
 
-// Exportar para uso en módulos
+// Exportar para uso en módulos y global
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = WhatsAppFloat;
 }
+if (typeof window !== 'undefined') {
+  window.WhatsAppFloat = WhatsAppFloat;
+}
+export default WhatsAppFloat;
