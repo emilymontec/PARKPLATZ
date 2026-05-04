@@ -18,7 +18,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(cors());
+// CORS solo en desarrollo (en produccion, front y back corren en el mismo puerto)
+if (process.env.NODE_ENV !== "production") {
+  app.use(cors());
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
